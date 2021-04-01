@@ -1,4 +1,4 @@
-#Celebrity App
+# Celebrity App
 
 The app's purpose is to create a function that helps to find the celebrities given a list of people.
 
