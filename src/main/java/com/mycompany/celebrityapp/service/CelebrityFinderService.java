@@ -1,10 +1,10 @@
 package com.mycompany.celebrityapp.service;
 
+import com.mycompany.celebrityapp.domain.Person;
 import com.mycompany.celebrityapp.domain.PersonWithKnownPeople;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -19,46 +19,40 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CelebrityFinderService {
 
-    public List<PersonWithKnownPeople> findCelebrities(List<PersonWithKnownPeople> people) {
-        log.debug("findCelebrities :: people: " + people);
-        List<PersonWithKnownPeople> celebrities = new ArrayList<>();
+    public PersonWithKnownPeople findTheCelebrity(List<PersonWithKnownPeople> people) {
+        Map<Long, PersonWithKnownPeople> peopleMap = new HashMap<>();
+        Map<Long, Long> celebritiesCandidateCountMap = new HashMap<>();
+        PersonWithKnownPeople celebrity = null;
+        log.info("findTheCelebrity");
 
-        if(people != null) {
-            for (int i = 0; i < people.size(); i++) {
-                int count = 0;
-                PersonWithKnownPeople foundCelebrity = findCelebrity(people.get(i), people);
-                if (foundCelebrity != null) {
-                    celebrities.add(foundCelebrity);
+        if(people != null){
+            for (PersonWithKnownPeople personInList : people) {
+                peopleMap.put(personInList.getPersonId(), personInList);
+            }
+
+            for (PersonWithKnownPeople personInList : people) {
+                for (Long knownPersonId : personInList.getKnowPeople()) {
+                    if(peopleMap.get(knownPersonId) != null){
+                        Long currentCount = celebritiesCandidateCountMap.get(knownPersonId);
+                        if(currentCount == null){
+                            currentCount = 0l;
+                        }
+                        currentCount ++;
+                        celebritiesCandidateCountMap.put(knownPersonId, currentCount);
+                    }
+                }
+            }
+
+            for(Long celebrityCandidateId: celebritiesCandidateCountMap.keySet()){
+                if(celebritiesCandidateCountMap.get(celebrityCandidateId) == people.size()){
+                    celebrity = peopleMap.get(celebrityCandidateId);
                 }
             }
         }
 
-        log.info("celebrities found: " + celebrities);
-        return celebrities;
+        log.info("celebrity found: " + celebrity);
+        return celebrity;
     }
 
-    private PersonWithKnownPeople findCelebrity(PersonWithKnownPeople celebrityCandidate, List<PersonWithKnownPeople> people) {
 
-        log.debug("isKnownPerson :: celebrityCandidate: " + celebrityCandidate);
-
-        List<PersonWithKnownPeople> filteredPeople = people.stream().filter(person -> person != celebrityCandidate).collect(Collectors.toList());
-
-        int count = 0;
-        for (PersonWithKnownPeople personInList : filteredPeople) {
-            for (String knownPerson : personInList.getKnowPeople()) {
-                if (knownPerson != null &&
-                        celebrityCandidate.getFirstName() != null &&
-                        celebrityCandidate.getLastName() != null &&
-                        (knownPerson.contains(celebrityCandidate.getFirstName()) &&
-                                knownPerson.contains(celebrityCandidate.getLastName()))) {
-                    count++;
-                }
-            }
-            if (count == filteredPeople.size()) {
-                return celebrityCandidate;
-            }
-
-        }
-        return null;
-    }
 }

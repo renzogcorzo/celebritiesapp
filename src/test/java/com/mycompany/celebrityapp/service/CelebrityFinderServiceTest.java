@@ -21,40 +21,13 @@ public class CelebrityFinderServiceTest {
     @Test
     void getCelebrityWithOneCelebrity() {
         //given
-        PersonWithKnownPeople person1 = new PersonWithKnownPeople("Joe", "Doe");
-        person1.addKnownPeople("Will Smith");
+        PersonWithKnownPeople person1 = new PersonWithKnownPeople(1l, "Joe", "Doe");
+        person1.addKnownPeople(3l);
 
-        PersonWithKnownPeople person2 = new PersonWithKnownPeople("Mary", "Jones");
-        person2.addKnownPeople("Will Smith");
+        PersonWithKnownPeople person2 = new PersonWithKnownPeople(2l, "Mary", "Jones");
+        person2.addKnownPeople(3l);
 
-        PersonWithKnownPeople person3 = new PersonWithKnownPeople("Will", "Smith");
-
-        people.add(person1);
-        people.add(person2);
-        people.add(person3);
-
-        //when
-        CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
-
-        //then
-        assertThat(celebrities).isNotNull()
-                .contains(person3)
-                .size().isEqualTo(1);
-    }
-
-    @Test
-    void getCelebrityWithTwoCelebrities() {
-        //given
-        PersonWithKnownPeople person1 = new PersonWithKnownPeople("Joe", "Doe");
-        person1.addKnownPeople("Will Smith");
-        person1.addKnownPeople("Kurt Cobain");
-
-        PersonWithKnownPeople person2 = new PersonWithKnownPeople("Kurt", "Cobain");
-        person2.addKnownPeople("Will Smith");
-
-        PersonWithKnownPeople person3 = new PersonWithKnownPeople("Will", "Smith");
-        person3.addKnownPeople("Kurt Cobain");
+        PersonWithKnownPeople person3 = new PersonWithKnownPeople(3l, "Will", "Smith");
 
         people.add(person1);
         people.add(person2);
@@ -62,23 +35,22 @@ public class CelebrityFinderServiceTest {
 
         //when
         CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
+        PersonWithKnownPeople celebrity = celebrityFinderService.findTheCelebrity(people);
 
         //then
-        assertThat(celebrities).isNotNull()
-                .isNotEmpty()
-                .size().isEqualTo(2);
+        assertThat(celebrity).isNotNull();
+        assertThat(celebrity.getPersonId()).isEqualTo(3L);
     }
 
     @Test
     void getCelebrityWithZeroCelebrities() {
         //given
-        PersonWithKnownPeople person1 = new PersonWithKnownPeople("Joe", "Doe");
-        person1.addKnownPeople("Will Smith");
+        PersonWithKnownPeople person1 = new PersonWithKnownPeople(1l, "Joe", "Doe");
+        person1.addKnownPeople(3l);
 
-        PersonWithKnownPeople person2 = new PersonWithKnownPeople("Mary", "Jones");
+        PersonWithKnownPeople person2 = new PersonWithKnownPeople(2l, "Mary", "Jones");
 
-        PersonWithKnownPeople person3 = new PersonWithKnownPeople("Will", "Smith");
+        PersonWithKnownPeople person3 = new PersonWithKnownPeople(3l, "Will", "Smith");
 
         people.add(person1);
         people.add(person2);
@@ -86,19 +58,18 @@ public class CelebrityFinderServiceTest {
 
         //when
         CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
+        PersonWithKnownPeople celebrity = celebrityFinderService.findTheCelebrity(people);
 
         //then
-        assertThat(celebrities).isNotNull()
-                .isEmpty();
+        assertThat(celebrity).isNull();
     }
 
     @Test
     void getCelebrityWithZeroCelebritiesTestCase2() {
         //given
-        PersonWithKnownPeople person1 = new PersonWithKnownPeople("Joe", "Doe");
-        PersonWithKnownPeople person2 = new PersonWithKnownPeople("Mary", "Jones");
-        PersonWithKnownPeople person3 = new PersonWithKnownPeople("Will", "Smith");
+        PersonWithKnownPeople person1 = new PersonWithKnownPeople(1l, "Joe", "Doe");
+        PersonWithKnownPeople person2 = new PersonWithKnownPeople(2l ,"Mary", "Jones");
+        PersonWithKnownPeople person3 = new PersonWithKnownPeople(3l, "Will", "Smith");
 
         people.add(person1);
         people.add(person2);
@@ -106,19 +77,18 @@ public class CelebrityFinderServiceTest {
 
         //when
         CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
+        PersonWithKnownPeople celebrity = celebrityFinderService.findTheCelebrity(people);
 
         //then
-        assertThat(celebrities).isNotNull()
-                .isEmpty();
+        assertThat(celebrity).isNull();
     }
 
     @Test
     void getCelebrityWithZeroCelebritiesTestCase3NullNames() {
         //given
         PersonWithKnownPeople person1 = new PersonWithKnownPeople();
-        PersonWithKnownPeople person2 = new PersonWithKnownPeople("Mary", "Jones");
-        PersonWithKnownPeople person3 = new PersonWithKnownPeople("Will", "Smith");
+        PersonWithKnownPeople person2 = new PersonWithKnownPeople(2l, "Mary", "Jones");
+        PersonWithKnownPeople person3 = new PersonWithKnownPeople(3l, "Will", "Smith");
 
         people.add(person1);
         people.add(person2);
@@ -126,11 +96,11 @@ public class CelebrityFinderServiceTest {
 
         //when
         CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
+        PersonWithKnownPeople celebrity = celebrityFinderService.findTheCelebrity(people);
 
         //then
-        assertThat(celebrities).isNotNull()
-                .isEmpty();
+        assertThat(celebrity).isNull();
+
     }
 
     @Test
@@ -140,10 +110,9 @@ public class CelebrityFinderServiceTest {
 
         //when
         CelebrityFinderService celebrityFinderService = new CelebrityFinderService();
-        List<PersonWithKnownPeople> celebrities = celebrityFinderService.findCelebrities(people);
+        PersonWithKnownPeople celebrity = celebrityFinderService.findTheCelebrity(people);
 
         //then
-        assertThat(celebrities).isNotNull()
-                .isEmpty();
+        assertThat(celebrity).isNull();
     }
 }

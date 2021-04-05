@@ -8,21 +8,22 @@ import java.util.Set;
 @Getter
 public class PersonWithKnownPeople extends Person {
 
-    private Set<String> knowPeople;
+    private Set<Long> knowPeople;
 
     public PersonWithKnownPeople(){
         knowPeople = new HashSet<>();
     }
 
-    public PersonWithKnownPeople(String firstName, String lastName){
+    public PersonWithKnownPeople(Long personId, String firstName, String lastName){
         this();
+        this.setPersonId(personId);
         this.setFirstName(firstName);
         this.setLastName(lastName);
-        addKnownPeople(firstName + " " + lastName);
+        addKnownPeople(personId);
     }
 
-    public void addKnownPeople(String personFullName){
-        knowPeople.add(personFullName);
+    public void addKnownPeople(Long personId){
+        knowPeople.add(personId);
     }
 
 
